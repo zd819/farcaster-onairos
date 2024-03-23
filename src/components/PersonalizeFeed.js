@@ -13,7 +13,7 @@ const PersonalizeFeed = () => {
 
     const fetchPersonalizedFrames = async () => {
       try {
-        const response = await fetch('/api/load-frames', {
+        const response = await fetch('http://localhost:8080/api/load-frames', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -21,7 +21,9 @@ const PersonalizeFeed = () => {
           body: JSON.stringify({ walletAddress }),
         });
         const data = await response.json();
+        console.log("Frames before personalization : ", data)
         setCasts(data); // Assuming the backend returns an array of casts directly
+        console.log("Casts data 1: ",data[1])
       } catch (err) {
         console.error('Error fetching personalized frames:', err);
         setError('Failed to load personalized feed.');
@@ -46,9 +48,9 @@ const PersonalizeFeed = () => {
               {casts.map((cast, index) => (
                 <FeedCard
                   key={index}
-                  image={cast.data.castAddBody.embeds[0].url}
-                  author={cast.data.fid || "anon"} // Replace with actual author information if available
-                  text={cast.data.castAddBody.text}
+                  image={(cast.embeds && cast.embeds.length > 0) ? cast.embeds[0].url : undefined}
+                  author={cast.author.display_name || "Anonymous"} // Adjust according to your data structure
+                  text={cast.content} // Assuming 'content' holds the main text of the cast
                 />
               ))}
           </div>

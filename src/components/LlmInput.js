@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function LlmInput() {
+export default function LlmInput(props) {
   const [inputText, setInputText] = useState('');
   const [llmResponse, setLlmResponse] = useState('');
 
@@ -23,7 +23,7 @@ export default function LlmInput() {
     <div>
       <form onSubmit={handleSubmit}>
         <label>
-          Describe how to order/filter frames displayed
+          {props.Title}
           <input
             type="text"
             value={inputText}

@@ -37,7 +37,7 @@ const PersonalizeFeed = () => {
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 p-6">
-        <LlmInput/>
+        <LlmInput Title={"Describe how to order/filter frames displayed"}/>
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Recommendation Management</h2>
         {loading ? (
           <div>Loading...</div>

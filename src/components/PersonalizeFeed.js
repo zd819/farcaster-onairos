@@ -8,22 +8,29 @@ const PersonalizeFeed = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setLoading(true);
-    // Replace 'your-channel-url' with the actual channel you want to fetch casts from
-    const channelUrl = 'your-channel-url';
-    fetch(`https://hub.pinata.cloud/v1/castsByParent?url=${channelUrl}&pageSize=20&reverse=true`)
-      .then((response) => response.json())
-      .then((data) => {
-        // Process the data to get casts and user names
-        setCasts(data.messages);
-      })
-      .catch((err) => {
-        console.error('Failed to fetch casts:', err);
-        setError('Failed to load the feed');
-      })
-      .finally(() => {
+    // Assuming you have a way to get the current user's wallet address
+    const walletAddress = 'user-wallet-address';
+
+    const fetchPersonalizedFrames = async () => {
+      try {
+        const response = await fetch('/api/load-frames', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ walletAddress }),
+        });
+        const data = await response.json();
+        setCasts(data); // Assuming the backend returns an array of casts directly
+      } catch (err) {
+        console.error('Error fetching personalized frames:', err);
+        setError('Failed to load personalized feed.');
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchPersonalizedFrames();
   }, []);
 
   return (

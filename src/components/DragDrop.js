@@ -1,22 +1,29 @@
 // src/DragDrop.js
-import React, { useCallback } from 'react';
+import React from 'react';
 
 const DragDrop = () => {
-  const onDrop = useCallback(acceptedFiles => {
-    // Handle the files
-    console.log(acceptedFiles);
-  }, []);
+  const handleDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    // handle files...
+  };
+
+  const handleChange = (event) => {
+    // handle files...
+  };
 
   return (
-    <div className="border-4 border-dashed border-gray-400 rounded h-64 flex items-center justify-center">
-      <p>Drag 'n' drop some files here, or click to select files</p>
-      {/* The input type="file" is hidden and triggered when the div is clicked */}
+    <div
+      className="w-full h-64 border-4 border-dashed border-gray-400 rounded-lg cursor-pointer"
+      onDrop={handleDrop}
+      onDragOver={event => event.preventDefault()}
+    >
+      <h2 className="text-cente text-lg font-semibold text-gray-900 mb-4">Drag or Select Images</h2>
       <input
-        id="file-upload"
-        name="file-upload"
         type="file"
-        className="sr-only"
-        onChange={(event) => onDrop(event.target.files)}
+        className="w-full h-full opacity-0 cursor-pointer"
+        onChange={handleChange}
+        multiple
       />
     </div>
   );

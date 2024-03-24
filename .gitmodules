@@ -1,0 +1,3 @@
+[submodule "farcaster-server"]
+	path = farcaster-server
+	url = https://github.com/zd819/farcaster-server

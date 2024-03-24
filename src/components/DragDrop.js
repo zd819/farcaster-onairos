@@ -1,32 +1,59 @@
-// src/DragDrop.js
-import React from 'react';
+import React, { useState } from 'react';
 
-const DragDrop = () => {
-  const handleDrop = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    // handle files...
+function ImageUploadButton() {
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
   };
 
-  const handleChange = (event) => {
-    // handle files...
+  const handleUpload = async () => {
+    if (!image) return;
+
+    try {
+      // Get temporary API key
+      const tempKeyRes = await fetch("/api/keys", { method: "GET" });
+      const tempKeyData = await tempKeyRes.json();
+
+      // FormData to hold the file to upload
+      const formData = new FormData();
+      formData.append("file", image);
+
+      // Upload the image to Pinata
+      const uploadRes = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${tempKeyData.JWT}`,
+        },
+        body: formData,
+      });
+
+      const uploadResJson = await uploadRes.json();
+      const fileCID = uploadResJson.IpfsHash;
+      // Process the fileCID to generate imageUrl, and use this URL in your frame format
+      
+      // Delete temporary API key
+      await fetch("/api/keys", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ apiKey: tempKeyData.pinata_api_key }),
+      });
+
+    } catch (error) {
+      console.error('Error during file upload:', error);
+    }
   };
 
   return (
-    <div
-      className="w-full h-64 border-4 border-dashed border-gray-400 rounded-lg cursor-pointer"
-      onDrop={handleDrop}
-      onDragOver={event => event.preventDefault()}
-    >
-      <h2 className="text-cente text-lg font-semibold text-gray-900 mb-4">Drag or Select Images</h2>
-      <input
-        type="file"
-        className="w-full h-full opacity-0 cursor-pointer"
-        onChange={handleChange}
-        multiple
-      />
+    <div>
+      <input type="file" onChange={handleImageChange} />
+      <button onClick={handleUpload}>Upload Image</button>
+      {imageUrl && <img src={imageUrl} alt="Uploaded" />}
     </div>
   );
-};
+}
 
-export default DragDrop;
+export default ImageUploadButton;

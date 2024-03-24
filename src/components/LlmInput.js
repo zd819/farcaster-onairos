@@ -3,22 +3,27 @@
 import React, { useState } from 'react';
 
 export default function LlmInput(props) {
-  const [inputText, setInputText] = useState('');
-  const [llmResponse, setLlmResponse] = useState('');
+  const [inputText, setInputText] = useState(''); // Set to static timestamp for testing
+  // const [llmResponse, setLlmResponse] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/api/preferences', {
+      const response = await fetch('http://localhost:8080/api/personalize-feed', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ preference_text: inputText }),
+        body: JSON.stringify({ 
+          preference: 'timestamp', 
+          // Vitalik FID for testing
+          userId: 5650 
+        }),
       });
       const result = await response.json();
       console.log(result);
-      setLlmResponse(result.preference_output);  // Assuming the backend returns an object with a preference_output key
+      props.clicked(true);
+      props.setLlmResponse(result.preference_output);  // Assuming the backend returns an object with a preference_output key
     } catch (error) {
       console.error('Error processing preference:', error);
       alert("Failed to process preference.");
@@ -38,7 +43,7 @@ export default function LlmInput(props) {
         </label>
         <button type="submit">Submit</button>
       </form>
-      {llmResponse && <p>LLM Response: {llmResponse}</p>}
+      {/* {llmResponse && <p>LLM Response: {llmResponse}</p>} */}
     </div>
   );
 }

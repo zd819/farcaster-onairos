@@ -3,6 +3,8 @@ import React from 'react';
 import { DynamicContextProvider, DynamicWidget, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import Dashboard from './Dashboard.js';
+// import { PrivyLogin } from './components/privy.js';
+
 
 // Create a component that will render the dashboard conditionally
 const DynamicApp = () => {

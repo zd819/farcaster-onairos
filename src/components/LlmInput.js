@@ -1,3 +1,5 @@
+// LlmInput.js
+
 import React, { useState } from 'react';
 
 export default function LlmInput(props) {
@@ -6,17 +8,21 @@ export default function LlmInput(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate an API call
-    const response = await simulateLLMApiCall(inputText);
-    setLlmResponse(response);
-  };
-
-  const simulateLLMApiCall = (inputText) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(`Processed text: ${inputText}`);
-      }, 1000);
-    });
+    try {
+      const response = await fetch('http://localhost:8080/api/preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ preference_text: inputText }),
+      });
+      const result = await response.json();
+      console.log(result);
+      setLlmResponse(result.preference_output);  // Assuming the backend returns an object with a preference_output key
+    } catch (error) {
+      console.error('Error processing preference:', error);
+      alert("Failed to process preference.");
+    }
   };
 
   return (
